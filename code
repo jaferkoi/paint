@@ -1,0 +1,70 @@
+from turtle import *
+
+t = Turtle()
+t.shape('circle')
+t.color('blue')
+t.pensize(3)
+t.i = 0
+i=0
+size=1
+def big():
+    global size
+    size+=1
+    t.pensize(size)
+def small():
+    global size
+    if size!=1:
+        size-=1
+        t.pensize(size)
+
+def stepspace():
+    lst = ['red', 'yellow', 'white', 'blue','black']
+    t.i = (t.i + 1) % len(lst)
+    t.color(lst[t.i])
+def backgroundstep():
+    global i
+    lst = ['red', 'yellow', 'white', 'blue','black']
+    i = (i + 1) % len(lst)
+    bgcolor(lst[i])
+def Right():
+    t.goto(t.xcor()+10,t.ycor())
+def Left():
+    t.goto(t.xcor()-10,t.ycor())
+def Up():
+    t.goto(t.xcor(),t.ycor()+10)
+def Down():
+    t.goto(t.xcor(),t.ycor()-10)
+def draw(x, y):
+    t.goto(x, y)
+def move(x, y):
+    t.up()
+    t.goto(x, y)
+    t.down()
+def cir():
+    t.circle(60)
+def square():
+    for i in range(4):
+        t.fd(100)
+        t.lt(90)
+bgcolor('black')
+
+t.ondrag(draw)
+scr = t.getscreen()
+scr.onscreenclick(move)
+scr.onkey(stepspace, 'space')
+scr.onkey(Right,'Right')
+scr.onkey(Left,'Left')
+scr.onkey(Up,'Up')
+scr.onkey(Down,'Down')
+scr.onkey(t.begin_fill,'e')
+scr.onkey(t.end_fill,'r')
+scr.onkey(big,'i')
+scr.onkey(small,'o')
+scr.onkey(t.clear,'c')
+scr.onkey(cir,'q')
+scr.onkey(square,'w')
+scr.onkey(backgroundstep,'z')
+
+scr.listen()
+
+done()
