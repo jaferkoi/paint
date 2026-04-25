@@ -46,6 +46,11 @@ def square():
     for i in range(4):
         t.fd(100)
         t.lt(90)
+def star():
+    for i in range(5):
+        t.fd(100)
+        t.lt(144)
+bgcolor('black')
 bgcolor('black')
 
 t.ondrag(draw)
@@ -64,6 +69,7 @@ scr.onkey(t.clear,'c')
 scr.onkey(cir,'q')
 scr.onkey(square,'w')
 scr.onkey(backgroundstep,'z')
+scr.onkey(star, 's')
 
 scr.listen()
 
