@@ -1,0 +1,164 @@
+from turtle import *
+from random import randint
+
+s_width = 200
+s_height = 180
+wall_positions=[]
+class Sprite(Turtle):
+    def __init__(self, x, y, color, shape):
+        super().__init__()
+        self.up()
+        self.goto(x, y)
+        self.color(color)
+        self.shape(shape)
+        self.speed(10)
+        self.step = 10
+    
+    def move_right(self):
+        self.setheading(0)
+        if player.is_collide_wall(player.xcor()+(self.step+5),player.ycor()):
+            player.goto(-150,0)
+        else:
+            self.goto(self.xcor() + self.step, self.ycor())
+        
+    def move_left(self):
+        self.setheading(180)
+        if player.is_collide_wall(player.xcor()-(self.step+5),player.ycor()):
+            player.goto(-150,0)
+        else:
+            self.goto(self.xcor() - self.step, self.ycor())
+        
+    def move_up(self):
+        self.setheading(90)
+        if player.is_collide_wall(player.xcor(),player.ycor()+(self.step+5)):
+            player.goto(-150,0)
+        else:
+            self.goto(self.xcor(), self.ycor() + self.step)
+        
+    def move_down(self):
+        self.setheading(270)
+        if player.is_collide_wall(player.xcor(),player.ycor()-(self.step+5)):
+            player.goto(-150,0)
+        else:
+            self.goto(self.xcor(), self.ycor() - self.step)
+        
+    def is_collide(self, sprite):
+        dist = self.distance(sprite.xcor(), sprite.ycor())
+        return dist < 20
+    def is_collide_wall(self, x, y):
+        for wx, wy in wall_positions:
+            if abs(x - wx) < 10 and abs(y - wy) < 10:
+                return True
+        return False
+
+class wall_maker(Sprite):
+    def __init__(self, x, y, color='white', shape='square'):
+        super().__init__(x,y,color,shape)
+        self.speed(30)
+    def make_wall(self,n):
+        for _ in range(n):
+            self.fd(5)
+            self.stamp()
+            wall_positions.append([self.xcor(),self.ycor()])
+        
+class Enemy(Sprite):
+    def __init__(self, x, y, color, shape):
+        Sprite.__init__(self, x, y, color, shape)
+        self.step = 20
+    
+    def move(self, x_start, y_start, x_end, y_end):
+        self.x_st = x_start
+        self.y_st = y_start
+        self.x_en = x_end
+        self.y_en = y_end
+        self.goto(x_start, y_start)
+        self.setheading(self.towards(x_end, y_end))
+    
+    def make_step(self):
+        self.fd(self.step)
+        if self.distance(self.x_en, self.y_en) < self.step:
+            self.move(self.x_en, self.y_en, self.x_st, self.y_st)
+
+
+player = Sprite(-150,0, 'orchid', 'turtle')
+t2 = Sprite(50,-180, 'red', 'turtle')
+w1=wall_maker(-200,-50)
+w2=wall_maker(-200,50)
+w3=wall_maker(-210, -55)
+w3.lt(90)
+
+portal1=Sprite(-150,73,'blue','circle')
+portal2=Sprite(50,-73,'orange','circle')
+
+enemy1 = Enemy(s_width, -110, 'red', 'triangle')
+enemy2 = Enemy(-s_width, 90, 'red', 'triangle')
+
+enemy1.move(s_width, -110, -s_width, -110)
+enemy2.move(-s_width, 90, s_width, 90)
+
+score = 0
+scr = player.getscreen()
+scr.bgcolor('purple')
+w1.make_wall(30)
+idk=[[w1.xcor(),w1.ycor()]]
+w1.lt(90)
+w1.make_wall(10)
+w1.goto(idk[0])
+w1.rt(90)
+w1.make_wall(30)
+w2.make_wall(30)
+w3.make_wall(21)
+w1.lt(90)
+w1.make_wall(40)
+w2.lt(90)
+idk.append([w2.xcor(),w2.ycor()])
+w2.make_wall(10)
+w2.goto(idk[1])
+w2.rt(90)
+w2.make_wall(10)
+w1.lt(90)
+w1.make_wall(62)
+w1.lt(90)
+w1.make_wall(25)
+w1.goto(idk[0])
+
+w1.make_wall(30)
+w1.lt(90)
+w1.make_wall(50)
+w1.lt(90)
+w1.make_wall(30)
+w1.lt(90)
+w1.make_wall(20)
+
+scr.onkey(player.move_right, 'Right')
+scr.onkey(player.move_left, 'Left')
+scr.onkey(player.move_up, 'Up')
+scr.onkey(player.move_down, 'Down')
+scr.listen()
+
+
+
+while 1:
+    enemy1.make_step()
+    enemy2.make_step()
+    
+    if player.is_collide(t2):
+        score += 1
+        break
+    if player.is_collide(portal1):
+        player.ht()
+        player.goto(portal2.xcor(),portal2.ycor())
+        player.st()
+    if player.is_collide(enemy1) or player.is_collide(enemy2):
+        t2.ht()
+        break
+
+if score >= 1:
+    enemy1.ht()
+    enemy2.ht()
+    player.write("ПОБЕДА!", align="center", font=("Arial", 30, "bold"))
+    t2.color('orchid')
+else:
+    player.write("ПРОИГРЫШ!", align="center", font=("Arial", 30, "bold"))
+
+done()
